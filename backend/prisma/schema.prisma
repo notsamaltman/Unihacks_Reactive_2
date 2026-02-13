@@ -1,8 +1,115 @@
-// prisma/schema.prisma
-datasource db {
-  provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-  // uncomment next line if you use Prisma <5.10
-  // directUrl = env("DATABASE_URL_UNPOOLED")
+generator client {
+  provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- ENUMS ----------
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
+  OTHER
+}
+
+enum DatingIntent {
+  CASUAL
+  LONG_TERM
+  FRIENDSHIP
+  UNSURE
+}
+
+// ---------- USER ----------
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  password          String
+  name              String?
+  age               Int?
+  gender            Gender?
+  datingIntent      DatingIntent?
+  createdAt         DateTime @default(now())
+
+  latestProfileId   String?         @unique
+  latestProfile     ProfileVersion? @relation("LatestProfile", fields: [latestProfileId], references: [id])
+
+  preferenceId      String?         @unique
+  preferences       ReviewerPreference? @relation(fields: [preferenceId], references: [id])
+
+  profiles          ProfileVersion[] @relation("UserProfiles")
+  reviews           Review[] @relation("Reviewer")
+}
+
+
+model ProfileVersion {
+  id            String   @id @default(uuid())
+  userId        String
+  bio           String
+  prompts       Json
+  createdAt     DateTime @default(now())
+
+  user          User     @relation("UserProfiles", fields: [userId], references: [id])
+  
+  latestForUser User?    @relation("LatestProfile")
+
+  photos        Photo[]
+  reviews       Review[]
+}
+
+// ---------- PHOTOS ----------
+model Photo {
+  id               String   @id @default(uuid())
+  profileVersionId String
+  url              String
+
+  profileVersion   ProfileVersion @relation(fields: [profileVersionId], references: [id])
+}
+
+// ---------- REVIEWER PREFERENCES ----------
+model ReviewerPreference {
+  id               String   @id @default(uuid())
+  profileVersionId String   @unique
+  
+  // keep column, but not part of relation
+  userId           String   @unique
+
+  // inverse side of 1-1
+  user             User?
+
+  preferredGenders Gender[]
+  preferredIntent  DatingIntent?
+  tasteTags        String[]
+}
+
+
+// ---------- REVIEW ----------
+model Review {
+  id                String   @id @default(uuid())
+  profileVersionId  String
+  reviewerId        String?
+  reviewerGender    Gender?
+  reviewerIntent    DatingIntent?
+  createdAt         DateTime @default(now())
+
+  profileVersion    ProfileVersion @relation(fields: [profileVersionId], references: [id])
+  
+  // This side was correct, but needed the User.reviews field above
+  reviewer          User?          @relation("Reviewer", fields: [reviewerId], references: [id])
+
+  ratings           Int?
+  feedback          Feedback?
+}
+
+// ---------- FEEDBACK ----------
+model Feedback {
+  id          String   @id @default(uuid())
+  reviewId    String   @unique
+  photoNotes  String?
+  bioNotes    String?
+  redFlags    String[]
+  suggestions String[]
+
+  review      Review   @relation(fields: [reviewId], references: [id])
+}
