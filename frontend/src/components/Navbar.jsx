@@ -1,10 +1,30 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Rocket } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+
+    const scrollToSection = (sectionId) => {
+        setIsOpen(false);
+        if (location.pathname === '/') {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            navigate('/', { state: { scrollTo: sectionId } });
+        }
+    };
+
+    const navItems = [
+        { name: 'Features', id: 'features' },
+        { name: 'How it Works', id: 'how-it-works' },
+        { name: 'Testimonials', id: 'testimonials' }
+    ];
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-black/20 border-b border-white/10">
@@ -21,12 +41,16 @@ const Navbar = () => {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center gap-8">
-                    {['Features', 'How it Works', 'Testimonials'].map((item) => (
-                        <a key={item} href={`#${item.toLowerCase().replace(/\s/g, '-')}`} className="text-white/70 hover:text-white transition-colors text-sm font-medium">
-                            {item}
-                        </a>
+                    {navItems.map((item) => (
+                        <button
+                            key={item.name}
+                            onClick={() => scrollToSection(item.id)}
+                            className="text-white/70 hover:text-white transition-colors text-sm font-medium"
+                        >
+                            {item.name}
+                        </button>
                     ))}
-                    <Link to="/submission" className="btn-primary text-sm px-6 py-2.5">
+                    <Link to="/signup?role=submitter" className="btn-primary text-sm px-6 py-2.5">
                         Get Rizz Score
                     </Link>
                 </div>
@@ -50,18 +74,17 @@ const Navbar = () => {
                         className="md:hidden bg-black/90 border-b border-white/10 overflow-hidden"
                     >
                         <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-                            {['Features', 'How it Works', 'Testimonials'].map((item) => (
-                                <a
-                                    key={item}
-                                    href={`#${item.toLowerCase().replace(/\s/g, '-')}`}
-                                    className="text-white/70 hover:text-white py-2 block"
-                                    onClick={() => setIsOpen(false)}
+                            {navItems.map((item) => (
+                                <button
+                                    key={item.name}
+                                    onClick={() => scrollToSection(item.id)}
+                                    className="text-white/70 hover:text-white py-2 block text-left"
                                 >
-                                    {item}
-                                </a>
+                                    {item.name}
+                                </button>
                             ))}
                             <Link
-                                to="/submission"
+                                to="/signup?role=submitter"
                                 className="btn-primary text-center py-2"
                                 onClick={() => setIsOpen(false)}
                             >

@@ -8,6 +8,9 @@ import FeedbackDashboard from './pages/FeedbackDashboard';
 import VersionHistory from './pages/VersionHistory';
 import CreateNewVersion from './pages/CreateNewVersion';
 import SignupPage from './pages/SignupPage';
+import LoginPage from './pages/LoginPage';
+import ReviewerDashboard from './pages/ReviewerDashboard';
+import ReviewInterface from './pages/ReviewInterface';
 import Navbar from './components/Navbar';
 
 function App() {
@@ -26,6 +29,9 @@ function App() {
             <Route path="/history" element={<VersionHistory />} />
             <Route path="/new-version" element={<CreateNewVersion />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/reviewer-dashboard" element={<ReviewerDashboard />} />
+            <Route path="/review/:id" element={<ReviewInterface />} />
           </Routes>
         </main>
         <footer className="py-8 text-center text-white/40 text-sm">

@@ -7,8 +7,8 @@ const ReviewerPreferences = () => {
     const navigate = useNavigate();
 
     // State for selections
-    const [gender, setGender] = useState('female');
-    const [intent, setIntent] = useState('relationship');
+    const [gender, setGender] = useState('FEMALE');
+    const [intent, setIntent] = useState('LONG_TERM');
     const [vibes, setVibes] = useState([]);
 
     const vibeOptions = [
@@ -44,16 +44,16 @@ const ReviewerPreferences = () => {
                         <h2 className="text-lg font-bold">Reviewer Gender</h2>
                     </div>
                     <div className="grid grid-cols-3 gap-4">
-                        {['female', 'male', 'everyone'].map((opt) => (
+                        {['FEMALE', 'MALE', 'EVERYONE'].map((opt) => (
                             <button
                                 key={opt}
                                 onClick={() => setGender(opt)}
                                 className={`py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all ${gender === opt
-                                        ? 'bg-primary/20 border-primary text-white shadow-[0_0_15px_rgba(236,72,153,0.3)]'
-                                        : 'bg-white/5 border-white/10 hover:bg-white/10'
+                                    ? 'bg-primary/20 border-primary text-white shadow-[0_0_15px_rgba(236,72,153,0.3)]'
+                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
                                     }`}
                             >
-                                <span className="capitalize">{opt}</span>
+                                <span className="capitalize">{opt.toLowerCase()}</span>
                                 {gender === opt && <Check className="w-4 h-4" />}
                             </button>
                         ))}
@@ -68,17 +68,17 @@ const ReviewerPreferences = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         {[
-                            { id: 'relationship', label: 'Long-term Partner' },
-                            { id: 'casual', label: 'Casual / Fun' },
-                            { id: 'figuring', label: 'Figuring it out' },
-                            { id: 'friends', label: 'New Friends' }
+                            { id: 'LONG_TERM', label: 'Long-term Partner' },
+                            { id: 'CASUAL', label: 'Casual / Fun' },
+                            { id: 'UNSURE', label: 'Figuring it out' },
+                            { id: 'FRIENDSHIP', label: 'New Friends' }
                         ].map((opt) => (
                             <button
                                 key={opt.id}
                                 onClick={() => setIntent(opt.id)}
                                 className={`py-3 px-4 rounded-xl border flex items-center justify-between transition-all ${intent === opt.id
-                                        ? 'bg-purple-500/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
-                                        : 'bg-white/5 border-white/10 hover:bg-white/10'
+                                    ? 'bg-purple-500/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
+                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
                                     }`}
                             >
                                 <span className="text-left">{opt.label}</span>
@@ -101,8 +101,8 @@ const ReviewerPreferences = () => {
                                 onClick={() => handleVibeToggle(vibe)}
                                 disabled={!vibes.includes(vibe) && vibes.length >= 3}
                                 className={`py-2 px-4 rounded-full border text-sm transition-all ${vibes.includes(vibe)
-                                        ? 'bg-cyan-500/20 border-cyan-500 text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.3)]'
-                                        : 'bg-white/5 border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed'
+                                    ? 'bg-cyan-500/20 border-cyan-500 text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.3)]'
+                                    : 'bg-white/5 border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed'
                                     }`}
                             >
                                 {vibe}

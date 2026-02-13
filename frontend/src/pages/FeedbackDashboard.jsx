@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import {
     TrendingUp, AlertTriangle, Lightbulb, CheckCircle,
-    Share2, RotateCcw, ThumbsUp, ThumbsDown
+    Share2, RotateCcw, ThumbsUp, ThumbsDown, ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -31,6 +31,13 @@ const FeedbackDashboard = () => {
             sentiment: "neutral"
         }
     ];
+
+    const currentProfile = {
+        name: "Alex",
+        age: 24,
+        bio: "Unpopular opinion: pineapples belong on pizza 🍕",
+        photo: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&h=800&fit=crop"
+    };
 
     return (
         <div className="pt-24 pb-12 max-w-6xl mx-auto px-4">
@@ -89,25 +96,50 @@ const FeedbackDashboard = () => {
                         </p>
                     </motion.div>
 
+                    {/* Profile Preview */}
+                    <div className="glass-card overflow-hidden">
+                        <div className="aspect-[4/3] relative">
+                            <img
+                                src={currentProfile.photo}
+                                alt="Profile"
+                                className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                                <div>
+                                    <h3 className="text-xl font-bold">{currentProfile.name}, {currentProfile.age}</h3>
+                                    <p className="text-white/80 line-clamp-2 text-sm mt-1">{currentProfile.bio}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Quick Stats */}
                     <div className="glass-card p-6">
-                        <h3 className="font-bold mb-4">Quick Stats</h3>
+                        <h3 className="font-bold mb-4 flex items-center gap-2">
+                            <TrendingUp className="w-5 h-5 text-pink-400" />
+                            Performance
+                        </h3>
                         <div className="space-y-4">
-                            <div className="flex justify-between items-center">
-                                <span className="text-white/70">Photo Quality</span>
-                                <div className="flex gap-1">
-                                    {[1, 2, 3, 4].map(i => <div key={i} className="w-2 h-2 rounded-full bg-green-400"></div>)}
-                                    <div className="w-2 h-2 rounded-full bg-white/20"></div>
+                            {[
+                                { label: 'Photo Quality', value: 85, color: 'bg-green-500' },
+                                { label: 'Bio Creativity', value: 65, color: 'bg-yellow-500' },
+                                { label: 'Prompt Engagement', value: 45, color: 'bg-red-500' }
+                            ].map((stat, idx) => (
+                                <div key={idx} className="space-y-1">
+                                    <div className="flex justify-between text-xs font-medium">
+                                        <span className="text-white/70">{stat.label}</span>
+                                        <span>{stat.value}%</span>
+                                    </div>
+                                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${stat.value}%` }}
+                                            transition={{ delay: 0.5 + idx * 0.1, duration: 1 }}
+                                            className={`h-full ${stat.color}`}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-white/70">Bio Creativity</span>
-                                <div className="flex gap-1">
-                                    {[1, 2, 3].map(i => <div key={i} className="w-2 h-2 rounded-full bg-yellow-400"></div>)}
-                                    <div className="w-2 h-2 rounded-full bg-white/20"></div>
-                                    <div className="w-2 h-2 rounded-full bg-white/20"></div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>

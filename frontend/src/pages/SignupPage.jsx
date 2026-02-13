@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Rocket, User, Mail, Lock, ArrowRight } from 'lucide-react';
 
@@ -127,9 +127,9 @@ const SignupPage = () => {
                 {!isSignedUp && (
                     <p className="text-center text-white/40 text-sm mt-6">
                         Already have an account?{' '}
-                        <button className="text-pink-400 hover:text-pink-300 font-medium transition-colors">
+                        <Link to="/login" className="text-pink-400 hover:text-pink-300 font-medium transition-colors">
                             Log in
-                        </button>
+                        </Link>
                     </p>
                 )}
             </motion.div>

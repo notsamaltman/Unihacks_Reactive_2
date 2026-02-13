@@ -9,6 +9,10 @@ const CreateNewVersion = () => {
     // Pre-filled data simulation
     const [bio, setBio] = useState('Unpopular opinion: pineapple belongs on pizza. 🍕\n\nLooking for someone to go on hiking adventures with and maybe steal my hoodies. Professional napper and part-time coffee connoisseur.');
     const [files, setFiles] = useState([]);
+    const [prompts, setPrompts] = useState([
+        { question: 'A non-negotiable...', answer: 'You must like dogs.' },
+        { question: 'I guarantee you that...', answer: 'I will beat you at Mario Kart.' }
+    ]);
 
     const handleSave = () => {
         // Simulate save
@@ -53,6 +57,43 @@ const CreateNewVersion = () => {
                         <div className="flex justify-between mt-2 text-xs text-white/40">
                             <span>Try to include one specific hobby or interest.</span>
                             <span>{bio.length}/500</span>
+                        </div>
+                    </div>
+
+                    <div className="glass-card p-6">
+                        <h2 className="text-lg font-bold mb-4">Edit Prompts</h2>
+                        <div className="space-y-4">
+                            {prompts.map((prompt, index) => (
+                                <div key={index} className="space-y-2 bg-white/5 p-4 rounded-xl border border-white/10">
+                                    <input
+                                        type="text"
+                                        placeholder="Prompt Question"
+                                        value={prompt.question}
+                                        onChange={(e) => {
+                                            const newPrompts = [...prompts];
+                                            newPrompts[index].question = e.target.value;
+                                            setPrompts(newPrompts);
+                                        }}
+                                        className="glass-input w-full text-sm mb-2"
+                                    />
+                                    <textarea
+                                        placeholder="Your Answer..."
+                                        value={prompt.answer}
+                                        onChange={(e) => {
+                                            const newPrompts = [...prompts];
+                                            newPrompts[index].answer = e.target.value;
+                                            setPrompts(newPrompts);
+                                        }}
+                                        className="glass-input w-full min-h-[60px] resize-none text-sm"
+                                    />
+                                </div>
+                            ))}
+                            <button
+                                onClick={() => setPrompts([...prompts, { question: '', answer: '' }])}
+                                className="text-sm text-pink-400 hover:text-pink-300 transition-colors"
+                            >
+                                + Add another prompt
+                            </button>
                         </div>
                     </div>
                 </div>
