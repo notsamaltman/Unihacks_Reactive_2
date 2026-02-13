@@ -14,10 +14,43 @@ const ProfileSubmission = () => {
     const [datingIntent, setDatingIntent] = useState('LONG_TERM');
     const [prompts, setPrompts] = useState([{ question: '', answer: '' }]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simulate navigation to next step
-        navigate('/preferences');
+
+        try {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('age', age);
+            formData.append('gender', gender);
+            formData.append('datingIntent', datingIntent);
+            formData.append('bio', bio);
+            formData.append('prompts', JSON.stringify(prompts));
+
+            files.forEach((file) => {
+                formData.append('photos', file);
+            });
+
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:8080/api/profile', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // Optionally store profile ID if needed for next step, though backend handles linking
+                navigate('/preferences');
+            } else {
+                const errorData = await response.json();
+                alert(errorData.error || 'Failed to create profile');
+            }
+        } catch (error) {
+            console.error('Profile submission error:', error);
+            alert('An error occurred during submission');
+        }
     };
 
     return (

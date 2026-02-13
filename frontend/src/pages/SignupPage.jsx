@@ -12,6 +12,7 @@ const SignupPage = () => {
         email: '',
         password: ''
     });
+    const [isLoading, setIsLoading] = useState(false);
     const [isSignedUp, setIsSignedUp] = useState(false);
 
     useEffect(() => {
@@ -22,11 +23,39 @@ const SignupPage = () => {
         }
     }, [location]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you would typically handle the actual signup logic (API call)
-        console.log('Signing up as:', role, formData);
-        setIsSignedUp(true);
+        setIsLoading(true);
+        try {
+            const response = await fetch('http://localhost:8080/api/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password,
+                    name: formData.name,
+                    datingIntent: role === 'reviewer' ? 'UNSURE' : 'CASUAL', // Default or handle in UI
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                // Store user info if needed
+                localStorage.setItem('user', JSON.stringify(data.user));
+                setIsSignedUp(true);
+            } else {
+                alert(data.error || 'Signup failed');
+            }
+        } catch (error) {
+            console.error('Signup error:', error);
+            alert('An error occurred during signup');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleContinue = () => {
@@ -103,10 +132,14 @@ const SignupPage = () => {
 
                         <button
                             type="submit"
-                            className="w-full btn-primary py-3 flex items-center justify-center gap-2 group"
+                            disabled={isLoading}
+                            className="w-full btn-primary py-3 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
                         >
-                            Create Account
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            {isLoading && (
+                                <div className="absolute bottom-0 left-0 h-1 bg-white/50 animate-loading-bar w-full"></div>
+                            )}
+                            {isLoading ? 'Creating Account...' : 'Create Account'}
+                            {!isLoading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
                         </button>
                     </form>
                 ) : (

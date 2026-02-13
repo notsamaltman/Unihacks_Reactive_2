@@ -1,12 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Rocket } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import LogoutModal from './LogoutModal';
 
 const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setIsLoggedIn(!!token);
+    }, [location]);
+
+    const handleLogoutConfirm = () => {
+        setIsLoggingOut(true);
+
+        // Simulate a small delay for better UX
+        setTimeout(() => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setIsLoggedIn(false);
+            setShowLogoutModal(false);
+            setIsLoggingOut(false);
+            // Force a hard refresh to clear any in-memory state
+            window.location.href = '/';
+        }, 1500);
+    };
 
     const scrollToSection = (sectionId) => {
         setIsOpen(false);
@@ -21,8 +45,6 @@ const Navbar = () => {
     };
 
     const navItems = [
-        { name: 'Features', id: 'features' },
-        { name: 'How it Works', id: 'how-it-works' },
         { name: 'Testimonials', id: 'testimonials' }
     ];
 
@@ -50,9 +72,18 @@ const Navbar = () => {
                             {item.name}
                         </button>
                     ))}
-                    <Link to="/signup?role=submitter" className="btn-primary text-sm px-6 py-2.5">
-                        Get Rizz Score
-                    </Link>
+                    {isLoggedIn ? (
+                        <button
+                            onClick={() => setShowLogoutModal(true)}
+                            className="text-white/70 hover:text-white transition-colors text-sm font-medium"
+                        >
+                            Logout
+                        </button>
+                    ) : (
+                        <Link to="/signup?role=submitter" className="btn-primary text-sm px-6 py-2.5">
+                            Get Rizz Score
+                        </Link>
+                    )}
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -90,10 +121,28 @@ const Navbar = () => {
                             >
                                 Get Rizz Score
                             </Link>
+                            {isLoggedIn && (
+                                <button
+                                    onClick={() => {
+                                        setShowLogoutModal(true);
+                                        setIsOpen(false);
+                                    }}
+                                    className="text-white/70 hover:text-white py-2 block text-left"
+                                >
+                                    Logout
+                                </button>
+                            )}
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <LogoutModal
+                isOpen={showLogoutModal}
+                onClose={() => !isLoggingOut && setShowLogoutModal(false)}
+                onConfirm={handleLogoutConfirm}
+                isLoading={isLoggingOut}
+            />
         </nav>
     );
 };

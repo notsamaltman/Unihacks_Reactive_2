@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage';
 import ProfileSubmission from './pages/ProfileSubmission';
 import ReviewerPreferences from './pages/ReviewerPreferences';
 import SubmissionConfirmation from './pages/SubmissionConfirmation';
+import Dashboard from './pages/Dashboard';
 import FeedbackDashboard from './pages/FeedbackDashboard';
 import VersionHistory from './pages/VersionHistory';
 import CreateNewVersion from './pages/CreateNewVersion';
@@ -13,6 +14,8 @@ import ReviewerDashboard from './pages/ReviewerDashboard';
 import ReviewInterface from './pages/ReviewInterface';
 import Navbar from './components/Navbar';
 
+import ProtectedRoute from './components/ProtectedRoute';
+
 function App() {
   return (
     <Router>
@@ -21,17 +24,18 @@ function App() {
         <main className="flex-grow container mx-auto px-4 py-8">
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/submit" element={<ProfileSubmission />} />
-            <Route path="/submission" element={<ProfileSubmission />} />
-            <Route path="/preferences" element={<ReviewerPreferences />} />
-            <Route path="/confirmation" element={<SubmissionConfirmation />} />
-            <Route path="/dashboard" element={<FeedbackDashboard />} />
-            <Route path="/history" element={<VersionHistory />} />
-            <Route path="/new-version" element={<CreateNewVersion />} />
+            <Route path="/submit" element={<ProtectedRoute><ProfileSubmission /></ProtectedRoute>} />
+            <Route path="/submission" element={<ProtectedRoute><ProfileSubmission /></ProtectedRoute>} />
+            <Route path="/preferences" element={<ProtectedRoute><ReviewerPreferences /></ProtectedRoute>} />
+            <Route path="/confirmation" element={<ProtectedRoute><SubmissionConfirmation /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/feedback" element={<ProtectedRoute><FeedbackDashboard /></ProtectedRoute>} />
+            <Route path="/history" element={<ProtectedRoute><VersionHistory /></ProtectedRoute>} />
+            <Route path="/new-version" element={<ProtectedRoute><CreateNewVersion /></ProtectedRoute>} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/reviewer-dashboard" element={<ReviewerDashboard />} />
-            <Route path="/review/:id" element={<ReviewInterface />} />
+            <Route path="/reviewer-dashboard" element={<ProtectedRoute><ReviewerDashboard /></ProtectedRoute>} />
+            <Route path="/review/:id" element={<ProtectedRoute><ReviewInterface /></ProtectedRoute>} />
           </Routes>
         </main>
         <footer className="py-8 text-center text-white/40 text-sm">

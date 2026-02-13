@@ -5,21 +5,44 @@ import { Rocket, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
     const [loginRole, setLoginRole] = useState('submitter');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simulate login
-        console.log('Logging in with:', formData, 'Role:', loginRole);
+        setIsLoading(true);
+        try {
+            const response = await fetch('http://localhost:8080/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-        if (loginRole === 'reviewer') {
-            navigate('/reviewer-dashboard');
-        } else {
-            navigate('/dashboard');
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+
+                if (loginRole === 'reviewer') {
+                    navigate('/reviewer-dashboard');
+                } else {
+                    navigate('/dashboard');
+                }
+            } else {
+                alert(data.error || 'Login failed');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('An error occurred during login');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -44,28 +67,6 @@ const LoginPage = () => {
                     <p className="text-white/60 mt-2">
                         Log in to view your Rizz Score and feedback.
                     </p>
-                </div>
-
-                {/* Role Switcher */}
-                <div className="flex p-1 bg-white/5 rounded-lg mb-6 border border-white/10">
-                    <button
-                        onClick={() => setLoginRole('submitter')}
-                        className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginRole === 'submitter'
-                                ? 'bg-pink-500 text-white shadow-lg'
-                                : 'text-white/60 hover:text-white'
-                            }`}
-                    >
-                        My Profile
-                    </button>
-                    <button
-                        onClick={() => setLoginRole('reviewer')}
-                        className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${loginRole === 'reviewer'
-                                ? 'bg-purple-500 text-white shadow-lg'
-                                : 'text-white/60 hover:text-white'
-                            }`}
-                    >
-                        Reviewer Mode
-                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -96,10 +97,14 @@ const LoginPage = () => {
 
                     <button
                         type="submit"
-                        className="w-full btn-primary py-3 flex items-center justify-center gap-2 group"
+                        disabled={isLoading}
+                        className="w-full btn-primary py-3 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
                     >
-                        Log In
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        {isLoading && (
+                            <div className="absolute bottom-0 left-0 h-1 bg-white/50 animate-loading-bar w-full"></div>
+                        )}
+                        {isLoading ? 'Logging in...' : 'Log In'}
+                        {!isLoading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
                     </button>
                 </form>
 

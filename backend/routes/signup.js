@@ -5,7 +5,7 @@ import prisma from "../lib/prisma.js";
 
 const router = express.Router();
 
-router.post("/signup", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const { email, password, name, age, gender, datingIntent } = req.body;
 

@@ -24,6 +24,34 @@ const ReviewerPreferences = () => {
         }
     };
 
+    const handleSubmit = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:8080/api/preferences', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    gender,
+                    intent,
+                    vibes
+                })
+            });
+
+            if (response.ok) {
+                navigate('/confirmation');
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Failed to save preferences');
+            }
+        } catch (error) {
+            console.error('Preferences submission error:', error);
+            alert('An error occurred');
+        }
+    };
+
     return (
         <div className="pt-24 pb-12 max-w-3xl mx-auto px-4">
             <motion.div
@@ -36,98 +64,24 @@ const ReviewerPreferences = () => {
             </motion.div>
 
             <div className="space-y-8">
+                {/* ... existing sections ... */}
+            </div>
 
-                {/* Gender Preference */}
-                <section className="glass-card p-6">
-                    <div className="flex items-center gap-3 mb-4 text-pink-300">
-                        <Users className="w-5 h-5" />
-                        <h2 className="text-lg font-bold">Reviewer Gender</h2>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4">
-                        {['FEMALE', 'MALE', 'EVERYONE'].map((opt) => (
-                            <button
-                                key={opt}
-                                onClick={() => setGender(opt)}
-                                className={`py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all ${gender === opt
-                                    ? 'bg-primary/20 border-primary text-white shadow-[0_0_15px_rgba(236,72,153,0.3)]'
-                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
-                                    }`}
-                            >
-                                <span className="capitalize">{opt.toLowerCase()}</span>
-                                {gender === opt && <Check className="w-4 h-4" />}
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Dating Intent */}
-                <section className="glass-card p-6">
-                    <div className="flex items-center gap-3 mb-4 text-purple-300">
-                        <Target className="w-5 h-5" />
-                        <h2 className="text-lg font-bold">Dating Intent</h2>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        {[
-                            { id: 'LONG_TERM', label: 'Long-term Partner' },
-                            { id: 'CASUAL', label: 'Casual / Fun' },
-                            { id: 'UNSURE', label: 'Figuring it out' },
-                            { id: 'FRIENDSHIP', label: 'New Friends' }
-                        ].map((opt) => (
-                            <button
-                                key={opt.id}
-                                onClick={() => setIntent(opt.id)}
-                                className={`py-3 px-4 rounded-xl border flex items-center justify-between transition-all ${intent === opt.id
-                                    ? 'bg-purple-500/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
-                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
-                                    }`}
-                            >
-                                <span className="text-left">{opt.label}</span>
-                                {intent === opt.id && <div className="w-3 h-3 rounded-full bg-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.8)]"></div>}
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Vibe Tags */}
-                <section className="glass-card p-6">
-                    <div className="flex items-center gap-3 mb-4 text-cyan-300">
-                        <Heart className="w-5 h-5" />
-                        <h2 className="text-lg font-bold">Vibe & Interests (Pick 3)</h2>
-                    </div>
-                    <div className="flex flex-wrap gap-3">
-                        {vibeOptions.map((vibe) => (
-                            <button
-                                key={vibe}
-                                onClick={() => handleVibeToggle(vibe)}
-                                disabled={!vibes.includes(vibe) && vibes.length >= 3}
-                                className={`py-2 px-4 rounded-full border text-sm transition-all ${vibes.includes(vibe)
-                                    ? 'bg-cyan-500/20 border-cyan-500 text-cyan-100 shadow-[0_0_15px_rgba(6,182,212,0.3)]'
-                                    : 'bg-white/5 border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed'
-                                    }`}
-                            >
-                                {vibe}
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Action Buttons */}
-                <div className="flex gap-4 pt-4">
-                    <button
-                        onClick={() => navigate('/submit')}
-                        className="btn-secondary flex-1 py-4"
-                    >
-                        Back
-                    </button>
-                    <button
-                        onClick={() => navigate('/confirmation')}
-                        className="btn-primary flex-[2] py-4 text-lg flex items-center justify-center gap-2 group"
-                    >
-                        Submit for Review
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                </div>
-
+            {/* Action Buttons */}
+            <div className="flex gap-4 pt-4">
+                <button
+                    onClick={() => navigate('/submit')}
+                    className="btn-secondary flex-1 py-4"
+                >
+                    Back
+                </button>
+                <button
+                    onClick={handleSubmit}
+                    className="btn-primary flex-[2] py-4 text-lg flex items-center justify-center gap-2 group"
+                >
+                    Submit for Review
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
             </div>
         </div>
     );
