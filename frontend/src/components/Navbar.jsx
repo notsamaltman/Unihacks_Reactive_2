@@ -8,7 +8,7 @@ const Navbar = () => {
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-black/20 border-b border-white/10">
-            <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div className="w-full px-8 py-4 flex justify-between items-center">
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2 group">
                     <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 group-hover:shadow-[0_0_15px_rgba(236,72,153,0.5)] transition-all">

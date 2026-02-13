@@ -7,6 +7,7 @@ import SubmissionConfirmation from './pages/SubmissionConfirmation';
 import FeedbackDashboard from './pages/FeedbackDashboard';
 import VersionHistory from './pages/VersionHistory';
 import CreateNewVersion from './pages/CreateNewVersion';
+import SignupPage from './pages/SignupPage';
 import Navbar from './components/Navbar';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/dashboard" element={<FeedbackDashboard />} />
             <Route path="/history" element={<VersionHistory />} />
             <Route path="/new-version" element={<CreateNewVersion />} />
+            <Route path="/signup" element={<SignupPage />} />
           </Routes>
         </main>
         <footer className="py-8 text-center text-white/40 text-sm">

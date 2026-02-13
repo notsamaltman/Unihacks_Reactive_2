@@ -32,13 +32,13 @@ const LandingPage = () => {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link to="/submission" className="btn-primary text-lg px-8 py-4 flex items-center gap-2 group">
-                            Get Your Rizz Score
+                        <Link to="/signup?role=submitter" className="btn-primary text-lg px-8 py-4 flex items-center gap-2 group">
+                            Get Reviewed
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                        <button className="btn-secondary text-lg px-8 py-4">
-                            View Sample Report
-                        </button>
+                        <Link to="/signup?role=reviewer" className="btn-secondary text-lg px-8 py-4">
+                            Give Feedback
+                        </Link>
                     </div>
                 </motion.div>
             </section>
