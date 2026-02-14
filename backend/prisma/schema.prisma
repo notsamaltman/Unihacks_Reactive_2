@@ -103,6 +103,7 @@ model Review {
   reviewer          User?          @relation("Reviewer", fields: [reviewerId], references: [id])
 
   ratings           Int?
+  isRead            Boolean        @default(false)
   feedback          Feedback?
 }
 
@@ -110,10 +111,13 @@ model Review {
 model Feedback {
   id          String   @id @default(uuid())
   reviewId    String   @unique
-  photoNotes  String?
-  bioNotes    String?
-  redFlags    String[]
-  suggestions String[]
+  photoNotes      String?
+  bioNotes        String?
+  vibeCheck       String?
+  whatWorks       String?
+  whatDoesntWork  String?
+  redFlags        String[]
+  suggestions     String[]
 
   review      Review   @relation(fields: [reviewId], references: [id])
 }

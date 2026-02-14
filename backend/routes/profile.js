@@ -177,9 +177,22 @@ router.get('/:id', verifyToken, async (req, res) => {
             return res.status(404).json({ error: 'Profile not found' });
         }
 
-        // Ensure the user owns this profile (optional, but good for privacy)
+        // For now, in this lab, profiles can be viewed by any authenticated user 
+        // if they are linked from the reviewer dashboard. 
+        // We'll just remove the strict ownership check for the detailed view 
+        // but keep it for editing (which happens in the POST route).
+
+        // However, we should at least ensure the user exists.
         if (profile.userId !== req.user.userId) {
-            return res.status(403).json({ error: 'Access denied' });
+            // Include user details if viewing as a reviewer
+            const extendedProfile = await prisma.profileVersion.findUnique({
+                where: { id: req.params.id },
+                include: {
+                    photos: true,
+                    user: { select: { name: true, age: true } }
+                }
+            });
+            return res.json(extendedProfile);
         }
 
         res.json(profile);

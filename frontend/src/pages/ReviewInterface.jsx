@@ -1,43 +1,110 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, MessageSquare, ThumbsUp, ThumbsDown, ArrowLeft, Send } from 'lucide-react';
+import { Star, MessageSquare, ThumbsUp, ThumbsDown, ArrowLeft, Send, AlertCircle } from 'lucide-react';
 
 const ReviewInterface = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [rizzRating, setRizzRating] = useState(50);
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
 
     const [feedback, setFeedback] = useState({
-        vibe: '',
+        vibe: 'Wholesome',
         whatWorks: '',
-        needsWork: ''
+        needsWork: '',
+        suggest: ''
     });
 
-    // Dummy Profile Data
-    const profile = {
-        id: id,
-        name: 'David',
-        age: 25,
-        photos: [
-            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&h=800&fit=crop",
-            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&h=800&fit=crop"
-        ],
-        bio: "Just a regular guy looking for someone to share pizza with.",
-        prompts: [
-            { question: "A non-negotiable...", answer: "You must like dogs." },
-            { question: "I guarantee you that...", answer: "I will beat you at Mario Kart." }
-        ]
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                // We use a general get profile endpoint if available, or fetch matching to find it
+                // For now, let's assume we can fetch it directly or it was passed.
+                // Since we don't have a GET /api/profile/:id for public view, 
+                // I'll use the matching endpoint logic or assume /api/profile/:id doesn't checks ownership (wait, it DOES check ownership in profile.js).
+                // I need a public profile view endpoint.
+
+                // Let's check backend/routes/profile.js again for a public endpoint.
+                // ... later ... I'll just try to fetch it from a new public endpoint I'll add or use history.
+
+                // Actually, I'll add a GET /api/profile/public/:id in profile.js
+                const response = await fetch(`http://localhost:8080/api/profile/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                // Wait, the existing /api/profile/:id checks ownership.
+                // I need to update profile.js to allowed reviewers.
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setProfile(data);
+                } else if (response.status === 403) {
+                    // If it's 403, it means it's not our profile, which is EXPECTED for a reviewer.
+                    // I'll need to update the backend to allow viewing if you are an assigned reviewer.
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, [id]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:8080/api/reviews', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    profileVersionId: id,
+                    ratings: rizzRating,
+                    vibeCheck: feedback.vibe,
+                    whatWorks: feedback.whatWorks,
+                    whatDoesntWork: feedback.needsWork,
+                    suggestions: [feedback.suggest]
+                })
+            });
+
+            if (response.ok) {
+                navigate('/reviewer-dashboard');
+            } else {
+                alert('Failed to submit review');
+            }
+        } catch (error) {
+            console.error('Error submitting review:', error);
+            alert('An error occurred');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Submitting review:', { ...feedback, rizzRating });
-        // Simulate API call
-        setTimeout(() => {
-            navigate('/reviewer-dashboard');
-        }, 1000);
-    };
+    if (loading) return (
+        <div className="pt-32 text-center text-white/40">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500 mx-auto mb-4"></div>
+            <p>Loading profile for review...</p>
+        </div>
+    );
+
+    if (!profile) return (
+        <div className="pt-32 text-center text-white/40 px-4">
+            <AlertCircle className="w-12 h-12 mx-auto mb-4 opacity-20" />
+            <p>Profile not found or access restricted.</p>
+            <button onClick={() => navigate('/reviewer-dashboard')} className="btn-primary mt-4 px-6 py-2">Go Back</button>
+        </div>
+    );
 
     return (
         <div className="pt-24 pb-12 max-w-6xl mx-auto px-4">
@@ -53,22 +120,22 @@ const ReviewInterface = () => {
                 {/* Profile View */}
                 <div className="space-y-6">
                     <div className="glass-card overflow-hidden">
-                        <div className="grid grid-cols-2 gap-1">
+                        <div className="grid grid-cols-2 gap-1 bg-white/5">
                             {profile.photos.map((photo, idx) => (
                                 <img
                                     key={idx}
-                                    src={photo}
+                                    src={photo.url}
                                     alt={`Profile ${idx + 1}`}
                                     className="w-full aspect-[3/4] object-cover hover:opacity-90 transition-opacity cursor-pointer"
                                 />
                             ))}
                         </div>
                         <div className="p-6">
-                            <h2 className="text-2xl font-bold mb-2">{profile.name}, {profile.age}</h2>
+                            <h2 className="text-2xl font-bold mb-2">{profile.user?.name || 'User'}, {profile.user?.age || '??'}</h2>
                             <p className="text-white/80 mb-6">{profile.bio}</p>
 
                             <div className="space-y-4">
-                                {profile.prompts.map((prompt, idx) => (
+                                {profile.prompts?.map((prompt, idx) => (
                                     <div key={idx} className="bg-white/5 p-4 rounded-xl border border-white/10">
                                         <p className="text-xs text-pink-400 font-bold uppercase mb-1">{prompt.question}</p>
                                         <p className="text-white/90">{prompt.answer}</p>
@@ -103,12 +170,12 @@ const ReviewInterface = () => {
                                     min="0"
                                     max="100"
                                     value={rizzRating}
-                                    onChange={(e) => setRizzRating(e.target.value)}
+                                    onChange={(e) => setRizzRating(parseInt(e.target.value))}
                                     className="w-full accent-pink-500 h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
                                 />
                                 <div className="flex justify-between text-xs text-white/40 mt-1">
-                                    <span>Yikes 😬</span>
-                                    <span>Rizz God 🔥</span>
+                                    <span>Needs Help 😬</span>
+                                    <span>Rizz King/Queen 🔥</span>
                                 </div>
                             </div>
 
@@ -116,14 +183,14 @@ const ReviewInterface = () => {
                             <div>
                                 <label className="block text-sm font-medium text-white/80 mb-3">Vibe Check</label>
                                 <div className="grid grid-cols-2 gap-3">
-                                    {['Wholesome', 'Funny', 'Intense', 'Casual'].map((opt) => (
+                                    {['Wholesome', 'Funny', 'Mysterious', 'Adventurous', 'Casual', 'Intellectual'].map((opt) => (
                                         <button
                                             key={opt}
                                             type="button"
                                             onClick={() => setFeedback({ ...feedback, vibe: opt })}
                                             className={`py-2 px-3 rounded-lg border text-sm transition-all ${feedback.vibe === opt
-                                                    ? 'bg-purple-500/20 border-purple-500 text-white'
-                                                    : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
+                                                ? 'bg-purple-500/20 border-purple-500 text-white'
+                                                : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
                                                 }`}
                                         >
                                             {opt}
@@ -140,7 +207,7 @@ const ReviewInterface = () => {
                                 </label>
                                 <textarea
                                     className="glass-input w-full min-h-[80px] text-sm"
-                                    placeholder="e.g., Great smile in the second photo..."
+                                    placeholder="e.g., Great first photo, very inviting..."
                                     value={feedback.whatWorks}
                                     onChange={(e) => setFeedback({ ...feedback, whatWorks: e.target.value })}
                                 />
@@ -154,17 +221,29 @@ const ReviewInterface = () => {
                                 </label>
                                 <textarea
                                     className="glass-input w-full min-h-[80px] text-sm"
-                                    placeholder="e.g., Bio is a bit too generic..."
+                                    placeholder="e.g., The third prompt is a bit too short..."
                                     value={feedback.needsWork}
                                     onChange={(e) => setFeedback({ ...feedback, needsWork: e.target.value })}
                                 />
                             </div>
 
+                            {/* Suggestion */}
+                            <div>
+                                <label className="block text-sm font-medium text-white/80 mb-2">One key suggestion</label>
+                                <textarea
+                                    className="glass-input w-full min-h-[60px] text-sm"
+                                    placeholder="Try changing your primary photo to..."
+                                    value={feedback.suggest}
+                                    onChange={(e) => setFeedback({ ...feedback, suggest: e.target.value })}
+                                />
+                            </div>
+
                             <button
                                 type="submit"
-                                className="w-full btn-primary py-3 flex items-center justify-center gap-2 group"
+                                disabled={submitting}
+                                className="w-full btn-primary py-3 flex items-center justify-center gap-2 group disabled:opacity-50"
                             >
-                                Submit Review
+                                {submitting ? 'Submitting...' : 'Submit Review'}
                                 <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </form>

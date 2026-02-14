@@ -1,19 +1,37 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Star, MessageSquare, TrendingUp, User, ArrowRight, Shield } from 'lucide-react';
+import { Star, MessageSquare, TrendingUp, User, ArrowRight, Shield, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ReviewerDashboard = () => {
-    // Dummy Data
-    const stats = [
-        { label: 'Profiles Reviewed', value: '12', icon: User, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-        { label: 'Karma Points', value: '450', icon: Star, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
-        { label: 'Helpful Votes', value: '8', icon: TrendingUp, color: 'text-green-400', bg: 'bg-green-500/10' },
-    ];
+    const [queue, setQueue] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const queue = [
-        { id: 1, name: 'David', age: 25, type: 'Casual', img: null },
-        { id: 2, name: 'Sarah', age: 23, type: 'Long-term', img: null },
-        { id: 3, name: 'James', age: 28, type: 'Friends', img: null },
+    useEffect(() => {
+        const fetchMatches = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:8080/api/reviews/matching', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setQueue(data);
+                }
+            } catch (error) {
+                console.error('Error fetching matches:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMatches();
+    }, []);
+
+    const stats = [
+        { label: 'Profiles Reviewed', value: '0', icon: User, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+        { label: 'Karma Points', value: '0', icon: Star, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
+        { label: 'Helpful Votes', value: '0', icon: TrendingUp, color: 'text-green-400', bg: 'bg-green-500/10' },
     ];
 
     return (
@@ -26,7 +44,7 @@ const ReviewerDashboard = () => {
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30">
                     <Shield className="w-4 h-4 text-purple-400" />
-                    <span className="text-sm font-medium text-purple-200">Level 3 Reviewer</span>
+                    <span className="text-sm font-medium text-purple-200">Level 1 Reviewer</span>
                 </div>
             </div>
 
@@ -57,38 +75,66 @@ const ReviewerDashboard = () => {
             </h2>
 
             {/* Profile Queue */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {queue.map((profile, idx) => (
-                    <motion.div
-                        key={profile.id}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: idx * 0.1 + 0.3 }}
-                        className="glass-card overflow-hidden group hover:border-pink-500/30 transition-all"
-                    >
-                        <div className="aspect-[4/3] bg-gray-800 relative">
-                            <div className="absolute inset-0 flex items-center justify-center text-white/20">
-                                <User className="w-12 h-12" />
+            {loading ? (
+                <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500 mx-auto mb-4"></div>
+                    <p className="text-white/40">Finding matches for your expertise...</p>
+                </div>
+            ) : queue.length === 0 ? (
+                <div className="glass-card p-12 text-center text-white/40 border-dashed border-2 border-white/5">
+                    <Target className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                    <p>No profiles currently match your preferences.</p>
+                    <p className="text-sm">Try updating your own profile or check back later!</p>
+                </div>
+            ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {queue.map((profile, idx) => (
+                        <motion.div
+                            key={profile.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: idx * 0.1 + 0.3 }}
+                            className="glass-card overflow-hidden group hover:border-pink-500/30 transition-all flex flex-col"
+                        >
+                            <div className="aspect-[4/3] bg-gray-800 relative">
+                                {profile.photos && profile.photos.length > 0 ? (
+                                    <img
+                                        src={profile.photos[0].url}
+                                        alt={profile.user.name}
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center text-white/20">
+                                        <User className="w-12 h-12" />
+                                    </div>
+                                )}
+                                <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h3 className="font-bold text-lg">{profile.user.name}, {profile.user.age}</h3>
+                                    <div className="flex gap-2">
+                                        <span className="text-[10px] text-white/70 bg-white/10 px-2 py-0.5 rounded backdrop-blur-sm">
+                                            {profile.ReviewerPreference.preferredIntent.replace('_', ' ')}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
-                                <h3 className="font-bold text-lg">{profile.name}, {profile.age}</h3>
-                                <span className="text-xs text-white/70 bg-white/10 px-2 py-0.5 rounded backdrop-blur-sm">
-                                    Looking for: {profile.type}
-                                </span>
+                            <div className="p-4 flex-grow flex flex-col">
+                                <div className="mb-4">
+                                    <p className="text-[10px] text-white/40 uppercase font-bold mb-1 tracking-wider">Review Request</p>
+                                    <p className="text-sm text-white/80 line-clamp-2 italic">
+                                        "{profile.ReviewerPreference.preferredDescription || "I'm looking for feedback on my overall vibe!"}"
+                                    </p>
+                                </div>
+                                <div className="mt-auto">
+                                    <Link to={`/review/${profile.id}`} className="btn-primary w-full py-2 flex items-center justify-center gap-2 group-hover:bg-pink-600 transition-colors">
+                                        Start Review
+                                        <ArrowRight className="w-4 h-4" />
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
-                        <div className="p-4">
-                            <p className="text-sm text-white/60 mb-4">
-                                Needs help with: Photos & Bio
-                            </p>
-                            <Link to={`/review/${profile.id}`} className="btn-primary w-full py-2 flex items-center justify-center gap-2 group-hover:bg-pink-600 transition-colors">
-                                Start Review
-                                <ArrowRight className="w-4 h-4" />
-                            </Link>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            )}
         </div >
     );
 };
