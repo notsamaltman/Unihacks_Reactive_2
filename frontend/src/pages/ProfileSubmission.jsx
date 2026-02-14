@@ -33,8 +33,11 @@ const ProfileSubmission = () => {
     const [datingIntent, setDatingIntent] = useState('LONG_TERM');
     const [prompts, setPrompts] = useState([{ question: '', answer: '' }]);
 
+    const [loading, setLoading] = useState(false);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         try {
             const formData = new FormData();
@@ -72,6 +75,8 @@ const ProfileSubmission = () => {
         } catch (error) {
             console.error('Profile submission error:', error);
             alert('An error occurred during submission');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -217,12 +222,22 @@ const ProfileSubmission = () => {
 
                     <button
                         onClick={handleSubmit}
-                        className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-2 group"
+                        disabled={loading}
+                        className="btn-primary w-full py-4 text-lg flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Next: Reviewer Preferences
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        {loading ? 'Creating Profile...' : 'Submit New Profile'}
+                        {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
                     </button>
                 </motion.div>
+
+                {/* Loading Overlay */}
+                {loading && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary mb-4"></div>
+                        <h2 className="text-2xl font-bold animate-pulse">Analyzing your Rizz...</h2>
+                        <p className="text-white/60">Uploading photos and generating profile version</p>
+                    </div>
+                )}
 
                 {/* Live Preview Section */}
                 <motion.div

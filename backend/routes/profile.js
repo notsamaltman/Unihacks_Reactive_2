@@ -43,12 +43,9 @@ const verifyToken = (req, res, next) => {
 
 // Debug logging
 router.post('/', verifyToken, (req, res, next) => {
-    console.log('Profile route hit');
     next();
 }, upload.array('photos', 6), async (req, res) => {
-    console.log('Files uploaded:', req.files);
-    console.log('Body:', req.body);
-    console.log('User:', req.user);
+
 
     try {
         const { bio, name, age, gender, datingIntent, prompts } = req.body;
@@ -105,6 +102,52 @@ router.post('/', verifyToken, (req, res, next) => {
             console.error('Stack:', error.stack);
         }
         res.status(500).json({ error: 'Failed to create profile', details: error.message });
+    }
+});
+
+// Get all profile versions for the user
+router.get('/history', verifyToken, async (req, res) => {
+    console.log('GET /api/profile/history hit for user:', req.user.userId);
+    try {
+        const profiles = await prisma.profileVersion.findMany({
+            where: { userId: req.user.userId },
+            orderBy: { createdAt: 'desc' },
+            include: {
+                photos: true,
+                user: {
+                    select: { name: true }
+                }
+            }
+        });
+        res.json(profiles);
+    } catch (error) {
+        console.error('Error fetching profile history:', error);
+        res.status(500).json({ error: 'Failed to fetch history' });
+    }
+});
+
+// Get a specific profile version
+router.get('/:id', verifyToken, async (req, res) => {
+    console.log('GET /api/profile/:id hit with ID:', req.params.id);
+    try {
+        const profile = await prisma.profileVersion.findUnique({
+            where: { id: req.params.id },
+            include: { photos: true }
+        });
+
+        if (!profile) {
+            return res.status(404).json({ error: 'Profile not found' });
+        }
+
+        // Ensure the user owns this profile (optional, but good for privacy)
+        if (profile.userId !== req.user.userId) {
+            return res.status(403).json({ error: 'Access denied' });
+        }
+
+        res.json(profile);
+    } catch (error) {
+        console.error('Error fetching profile:', error);
+        res.status(500).json({ error: 'Failed to fetch profile' });
     }
 });
 

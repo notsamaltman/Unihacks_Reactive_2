@@ -12,6 +12,8 @@ import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import ReviewerDashboard from './pages/ReviewerDashboard';
 import ReviewInterface from './pages/ReviewInterface';
+import UserProfile from './pages/UserProfile';
+import ProfileDetail from './pages/ProfileDetail';
 import Navbar from './components/Navbar';
 
 import ProtectedRoute from './components/ProtectedRoute';
@@ -36,6 +38,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/reviewer-dashboard" element={<ProtectedRoute><ReviewerDashboard /></ProtectedRoute>} />
             <Route path="/review/:id" element={<ProtectedRoute><ReviewInterface /></ProtectedRoute>} />
+            <Route path="/my-profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+            <Route path="/profile/:id" element={<ProtectedRoute><ProfileDetail /></ProtectedRoute>} />
           </Routes>
         </main>
         <footer className="py-8 text-center text-white/40 text-sm">

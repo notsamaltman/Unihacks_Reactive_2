@@ -12,6 +12,13 @@ const LoginPage = () => {
     });
     const [loginRole, setLoginRole] = useState('submitter');
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/dashboard');
+        }
+    }, [navigate]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);

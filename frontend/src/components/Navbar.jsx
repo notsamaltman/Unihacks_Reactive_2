@@ -44,9 +44,9 @@ const Navbar = () => {
         }
     };
 
-    const navItems = [
-        { name: 'Testimonials', id: 'testimonials' }
-    ];
+    const navItems = isLoggedIn
+        ? [{ name: 'Dashboard', path: '/dashboard' }]
+        : [{ name: 'Testimonials', id: 'testimonials' }];
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-black/20 border-b border-white/10">
@@ -64,13 +64,23 @@ const Navbar = () => {
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center gap-8">
                     {navItems.map((item) => (
-                        <button
-                            key={item.name}
-                            onClick={() => scrollToSection(item.id)}
-                            className="text-white/70 hover:text-white transition-colors text-sm font-medium"
-                        >
-                            {item.name}
-                        </button>
+                        item.path ? (
+                            <Link
+                                key={item.name}
+                                to={item.path}
+                                className="text-white/70 hover:text-white transition-colors text-sm font-medium"
+                            >
+                                {item.name}
+                            </Link>
+                        ) : (
+                            <button
+                                key={item.name}
+                                onClick={() => scrollToSection(item.id)}
+                                className="text-white/70 hover:text-white transition-colors text-sm font-medium"
+                            >
+                                {item.name}
+                            </button>
+                        )
                     ))}
                     {isLoggedIn ? (
                         <button
@@ -106,13 +116,24 @@ const Navbar = () => {
                     >
                         <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
                             {navItems.map((item) => (
-                                <button
-                                    key={item.name}
-                                    onClick={() => scrollToSection(item.id)}
-                                    className="text-white/70 hover:text-white py-2 block text-left"
-                                >
-                                    {item.name}
-                                </button>
+                                item.path ? (
+                                    <Link
+                                        key={item.name}
+                                        to={item.path}
+                                        onClick={() => setIsOpen(false)}
+                                        className="text-white/70 hover:text-white py-2 block text-left font-medium"
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ) : (
+                                    <button
+                                        key={item.name}
+                                        onClick={() => scrollToSection(item.id)}
+                                        className="text-white/70 hover:text-white py-2 block text-left"
+                                    >
+                                        {item.name}
+                                    </button>
+                                )
                             ))}
                             <Link
                                 to="/signup?role=submitter"

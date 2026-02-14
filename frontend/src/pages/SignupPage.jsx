@@ -16,12 +16,18 @@ const SignupPage = () => {
     const [isSignedUp, setIsSignedUp] = useState(false);
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/dashboard');
+            return;
+        }
+
         const params = new URLSearchParams(location.search);
         const roleParam = params.get('role');
         if (roleParam) {
             setRole(roleParam);
         }
-    }, [location]);
+    }, [location, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
