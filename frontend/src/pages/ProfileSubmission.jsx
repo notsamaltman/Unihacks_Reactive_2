@@ -3,6 +3,25 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { User, AlignLeft, ArrowRight } from 'lucide-react';
 import FileUpload from '../components/FileUpload';
+import ImageStack from '../components/ImageStack';
+
+const predefinedPrompts = [
+    "A non-negotiable for me is...",
+    "My simple pleasures...",
+    "I'm convinced that...",
+    "Two truths and a lie...",
+    "The way to win me over is...",
+    "I spend most of my money on...",
+    "Best travel story...",
+    "My most controversial opinion is...",
+    "I geek out on...",
+    "The best spot in town for pizza is...",
+    "My golden rule...",
+    "I'm looking for...",
+    "Together we could...",
+    "My zombie apocalypse plan...",
+    "If I could have dinner with anyone..."
+];
 
 const ProfileSubmission = () => {
     const navigate = useNavigate();
@@ -41,7 +60,10 @@ const ProfileSubmission = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                // Optionally store profile ID if needed for next step, though backend handles linking
+
+                // Set flag to allow access to preferences page
+                localStorage.setItem('profile_step_complete', 'true');
+
                 navigate('/preferences');
             } else {
                 const errorData = await response.json();
@@ -158,17 +180,20 @@ const ProfileSubmission = () => {
                         <label className="text-sm font-medium ml-1">Profile Prompts</label>
                         {prompts.map((prompt, index) => (
                             <div key={index} className="space-y-2 bg-white/5 p-4 rounded-xl border border-white/10">
-                                <input
-                                    type="text"
-                                    placeholder="Prompt Question (e.g., 'A non-negotiable...')"
+                                <select
                                     value={prompt.question}
                                     onChange={(e) => {
                                         const newPrompts = [...prompts];
                                         newPrompts[index].question = e.target.value;
                                         setPrompts(newPrompts);
                                     }}
-                                    className="glass-input w-full text-sm mb-2"
-                                />
+                                    className="glass-input w-full text-sm mb-2 appearance-none"
+                                >
+                                    <option value="" disabled className="bg-gray-900 text-white/50">Select a prompt...</option>
+                                    {predefinedPrompts.map((p, i) => (
+                                        <option key={i} value={p} className="bg-gray-900">{p}</option>
+                                    ))}
+                                </select>
                                 <textarea
                                     placeholder="Your Answer..."
                                     value={prompt.answer}
@@ -218,16 +243,11 @@ const ProfileSubmission = () => {
                             </div>
 
                             <div className="h-full overflow-y-auto pb-8 custom-scrollbar">
-                                {/* Main Photo */}
+                                {/* Main Photo Stack */}
                                 <div className="relative aspect-[3/4] bg-gray-800">
-                                    {files[0] ? (
-                                        <img src={URL.createObjectURL(files[0])} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-white/20">
-                                            Top Photo
-                                        </div>
-                                    )}
-                                    <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 pt-12">
+                                    <ImageStack files={files} />
+
+                                    <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 pt-12 pointer-events-none z-20">
                                         <h2 className="text-2xl font-bold">{name || 'Your Name'} <span className="text-xl font-normal opacity-80">{age || '24'}</span></h2>
                                     </div>
                                 </div>
@@ -251,14 +271,13 @@ const ProfileSubmission = () => {
                                     ))}
                                 </div>
 
-                                {/* Other Photos */}
-                                <div className="px-4 pb-4 space-y-4">
-                                    {files.slice(1).map((file, i) => (
-                                        <div key={i} className="aspect-[3/4] rounded-lg overflow-hidden bg-gray-800">
-                                            <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" />
-                                        </div>
-                                    ))}
-                                </div>
+                                {files.length > 0 && (
+                                    <div className="px-4 pb-4">
+                                        <p className="text-xs text-white/30 text-center uppercase tracking-widest">
+                                            {files.length} Photos Added
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Home Indicator */}

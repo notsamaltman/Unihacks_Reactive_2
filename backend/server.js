@@ -13,6 +13,12 @@ app.use(loggerMiddleware);
 
 app.use('/api', router);
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: err.message || 'Internal Server Error' });
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`);
 });

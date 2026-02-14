@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Users, Target, ArrowRight, Check } from 'lucide-react';
@@ -10,6 +10,14 @@ const ReviewerPreferences = () => {
     const [gender, setGender] = useState('FEMALE');
     const [intent, setIntent] = useState('LONG_TERM');
     const [vibes, setVibes] = useState([]);
+
+    useEffect(() => {
+        // Enforce flow: Must complete profile submission first
+        const stepComplete = localStorage.getItem('profile_step_complete');
+        if (!stepComplete) {
+            navigate('/submit');
+        }
+    }, [navigate]);
 
     const vibeOptions = [
         "Chill", "Adventurous", "Intellectual", "Party", "Artsy",
@@ -41,6 +49,8 @@ const ReviewerPreferences = () => {
             });
 
             if (response.ok) {
+                // Clear flow flag so user can't navigate back to preferences without submitting profile again
+                localStorage.removeItem('profile_step_complete');
                 navigate('/confirmation');
             } else {
                 const data = await response.json();

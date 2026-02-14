@@ -11,11 +11,12 @@ const router = express.Router();
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from '../lib/cloudinary.js';
 
+
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'rizzlab',
-        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'], // Keeping this but ensuring spacing is standard
     },
 });
 
@@ -27,7 +28,7 @@ const upload = multer({
 // Middleware to verify token
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    consttoken = authHeader && authHeader.split(' ')[1];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) return res.status(401).json({ error: 'Access denied' });
 
@@ -40,7 +41,15 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-router.post('/', verifyToken, upload.array('photos', 6), async (req, res) => {
+// Debug logging
+router.post('/', verifyToken, (req, res, next) => {
+    console.log('Profile route hit');
+    next();
+}, upload.array('photos', 6), async (req, res) => {
+    console.log('Files uploaded:', req.files);
+    console.log('Body:', req.body);
+    console.log('User:', req.user);
+
     try {
         const { bio, name, age, gender, datingIntent, prompts } = req.body;
         const userId = req.user.userId;
@@ -53,6 +62,8 @@ router.post('/', verifyToken, upload.array('photos', 6), async (req, res) => {
             console.error('Error parsing prompts:', e);
             parsedPrompts = [];
         }
+
+        console.log('Creating profile in database...');
 
         // Create ProfileVersion
         const profile = await prisma.profileVersion.create({
@@ -71,6 +82,8 @@ router.post('/', verifyToken, upload.array('photos', 6), async (req, res) => {
             }
         });
 
+        console.log('Profile created:', profile.id);
+
         // Update User's latest profile and other details
         await prisma.user.update({
             where: { id: userId },
@@ -85,8 +98,13 @@ router.post('/', verifyToken, upload.array('photos', 6), async (req, res) => {
 
         res.status(201).json({ message: 'Profile created successfully', profile });
     } catch (error) {
-        console.error('Error creating profile:', error);
-        res.status(500).json({ error: 'Failed to create profile' });
+        console.error('CRITICAL ERROR in profile creation:');
+        console.error(error); // This prints the stack trace nicely in Node
+        if (error instanceof Error) {
+            console.error('Message:', error.message);
+            console.error('Stack:', error.stack);
+        }
+        res.status(500).json({ error: 'Failed to create profile', details: error.message });
     }
 });
 
