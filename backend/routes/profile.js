@@ -152,6 +152,14 @@ router.get('/history', verifyToken, async (req, res) => {
             orderBy: { createdAt: 'desc' },
             include: {
                 photos: true,
+                reviews: {
+                    include: {
+                        feedback: true,
+                        reviewer: {
+                            select: { name: true, gender: true }
+                        }
+                    }
+                },
                 user: {
                     select: { name: true }
                 }
@@ -189,7 +197,13 @@ router.get('/:id', verifyToken, async (req, res) => {
                 where: { id: req.params.id },
                 include: {
                     photos: true,
-                    user: { select: { name: true, age: true } }
+                    user: { select: { name: true, age: true } },
+                    reviews: {
+                        include: {
+                            feedback: true,
+                            reviewer: { select: { name: true, gender: true } }
+                        }
+                    }
                 }
             });
             return res.json(extendedProfile);

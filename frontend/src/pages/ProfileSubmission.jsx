@@ -308,6 +308,16 @@ const ProfileSubmission = () => {
                                     ) : (
                                         <p className="text-white/30 text-sm italic">Your bio will appear here...</p>
                                     )}
+
+                                    {hobbies.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 pt-2">
+                                            {hobbies.map((hobby, i) => (
+                                                <span key={i} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] text-white/60 font-medium">
+                                                    {hobby}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="px-4 pb-4 space-y-3">

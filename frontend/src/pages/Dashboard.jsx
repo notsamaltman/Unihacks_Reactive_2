@@ -227,56 +227,42 @@ const Dashboard = () => {
                                         key={review.id}
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
-                                        className={`p-6 rounded-2xl border transition-all ${!review.isRead ? 'bg-pink-500/5 border-pink-500/30' : 'bg-white/5 border-white/10'}`}
+                                        className={`p-5 rounded-2xl border transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99] ${!review.isRead ? 'bg-pink-500/5 border-pink-500/30' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
                                         onMouseEnter={() => !review.isRead && markAsRead(review.id)}
+                                        onClick={() => navigate(`/review-details/${review.id}`)}
                                     >
-                                        <div className="flex justify-between items-start mb-6">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center font-bold">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center font-bold text-lg shadow-lg shadow-pink-500/10">
                                                     {review.reviewer?.name?.charAt(0) || 'R'}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold">{review.reviewer?.name} reviewed your profile</p>
-                                                    <p className="text-[10px] text-white/40 uppercase tracking-widest">
-                                                        {new Date(review.createdAt).toLocaleDateString()}
+                                                    <p className="font-bold flex items-center gap-2">
+                                                        {review.reviewer?.name}
+                                                        {!review.isRead && <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></span>}
                                                     </p>
+                                                    <div className="flex items-center gap-3 mt-1">
+                                                        <span className="text-[10px] text-white/40 uppercase tracking-widest">
+                                                            {new Date(review.createdAt).toLocaleDateString()}
+                                                        </span>
+                                                        <div className="flex items-center gap-1 px-2 py-0.5 bg-white/5 rounded-full border border-white/10 text-[9px] font-bold text-white/60">
+                                                            <Zap className="w-2.5 h-2.5 text-yellow-500" />
+                                                            {review.feedback?.vibeCheck || 'Neutral'}
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="text-center">
-                                                <div className="text-2xl font-black text-pink-500 leading-none">{review.ratings}</div>
-                                                <div className="text-[8px] uppercase font-bold text-white/40">Rizz Score</div>
+
+                                            <div className="flex items-center gap-6">
+                                                <div className="text-right">
+                                                    <div className="text-2xl font-black text-pink-500 leading-none">{review.ratings}</div>
+                                                    <div className="text-[8px] uppercase font-bold text-white/40">Score</div>
+                                                </div>
+                                                <div className="p-2 bg-white/5 rounded-lg group-hover:bg-pink-500/20 transition-colors">
+                                                    <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-pink-500" />
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <div className="grid md:grid-cols-3 gap-4 mb-6">
-                                            <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <Zap className="w-3 h-3 text-yellow-400" />
-                                                    <span className="text-[10px] uppercase font-bold text-white/40">Vibe Check</span>
-                                                </div>
-                                                <p className="text-sm font-medium">{review.feedback?.vibeCheck || 'Neutral'}</p>
-                                            </div>
-                                            <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <ShieldCheck className="w-3 h-3 text-green-400" />
-                                                    <span className="text-[10px] uppercase font-bold text-white/40">What Works</span>
-                                                </div>
-                                                <p className="text-xs text-white/80 line-clamp-2">{review.feedback?.whatWorks || 'No comments'}</p>
-                                            </div>
-                                            <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <AlertTriangle className="w-3 h-3 text-red-400" />
-                                                    <span className="text-[10px] uppercase font-bold text-white/40">Needs Work</span>
-                                                </div>
-                                                <p className="text-xs text-white/80 line-clamp-2">{review.feedback?.whatDoesntWork || 'No comments'}</p>
-                                            </div>
-                                        </div>
-
-                                        {review.feedback?.suggestions && review.feedback.suggestions.length > 0 && (
-                                            <div className="bg-pink-500/10 p-4 rounded-xl border border-pink-500/20 italic text-sm text-pink-200">
-                                                "💡 {review.feedback.suggestions[0]}"
-                                            </div>
-                                        )}
                                     </motion.div>
                                 ))
                             )}

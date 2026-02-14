@@ -26,7 +26,16 @@ const ImageStack = ({ files }) => {
             <AnimatePresence initial={false} mode="popLayout">
                 <motion.img
                     key={currentIndex}
-                    src={URL.createObjectURL(files[currentIndex])}
+                    src={(() => {
+                        const file = files[currentIndex];
+                        if (typeof file === 'string') return file;
+                        if (file.url) return file.url;
+                        try {
+                            return URL.createObjectURL(file);
+                        } catch (e) {
+                            return '';
+                        }
+                    })()}
                     alt={`Profile ${currentIndex + 1}`}
                     initial={{ opacity: 0, x: 100 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -58,8 +67,8 @@ const ImageStack = ({ files }) => {
                             <div
                                 key={idx}
                                 className={`h-1 rounded-full transition-all ${idx === currentIndex
-                                        ? 'w-6 bg-white'
-                                        : 'w-1.5 bg-white/40'
+                                    ? 'w-6 bg-white'
+                                    : 'w-1.5 bg-white/40'
                                     }`}
                             />
                         ))}

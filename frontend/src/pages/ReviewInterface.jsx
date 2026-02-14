@@ -117,33 +117,71 @@ const ReviewInterface = () => {
             </button>
 
             <div className="grid lg:grid-cols-2 gap-8">
-                {/* Profile View */}
-                <div className="space-y-6">
-                    <div className="glass-card overflow-hidden">
-                        <div className="grid grid-cols-2 gap-1 bg-white/5">
-                            {profile.photos.map((photo, idx) => (
-                                <img
-                                    key={idx}
-                                    src={photo.url}
-                                    alt={`Profile ${idx + 1}`}
-                                    className="w-full aspect-[3/4] object-cover hover:opacity-90 transition-opacity cursor-pointer"
-                                />
-                            ))}
+                {/* Profile View - Phone Mockup */}
+                <div className="flex justify-center items-start pt-4">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="w-full max-w-[360px] border-[12px] border-[#0f1115] rounded-[3.5rem] overflow-hidden bg-gray-900 shadow-[0_0_80px_rgba(0,0,0,0.5)] relative ring-1 ring-white/10"
+                    >
+                        {/* Notch / Dynamic Island placeholder */}
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-[#0f1115] rounded-b-2xl z-30 flex items-center justify-center">
+                            <div className="w-12 h-1 bg-white/5 rounded-full"></div>
                         </div>
-                        <div className="p-6">
-                            <h2 className="text-2xl font-bold mb-2">{profile.user?.name || 'User'}, {profile.user?.age || '??'}</h2>
-                            <p className="text-white/80 mb-6">{profile.bio}</p>
 
-                            <div className="space-y-4">
-                                {profile.prompts?.map((prompt, idx) => (
-                                    <div key={idx} className="bg-white/5 p-4 rounded-xl border border-white/10">
-                                        <p className="text-xs text-pink-400 font-bold uppercase mb-1">{prompt.question}</p>
-                                        <p className="text-white/90">{prompt.answer}</p>
+                        <div className="h-[700px] overflow-y-auto pb-8 custom-scrollbar relative">
+                            <div className="relative aspect-[3/4.2] bg-gray-800">
+                                <ImageStack files={profile.photos} />
+
+                                {/* Info Overlay on Image */}
+                                <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 pt-24 pointer-events-none z-20">
+                                    <h2 className="text-3xl font-black text-white flex items-center gap-2">
+                                        {profile.user?.name}
+                                        <span className="text-2xl font-normal opacity-80">{profile.user?.age}</span>
+                                    </h2>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        {profile.user?.gender && (
+                                            <span className="px-2 py-0.5 bg-white/10 rounded-md text-[10px] font-bold uppercase tracking-widest text-white/60">
+                                                {profile.user.gender}
+                                            </span>
+                                        )}
                                     </div>
-                                ))}
+                                </div>
+                            </div>
+
+                            <div className="p-5 space-y-6">
+                                {/* Bio Section */}
+                                <div>
+                                    <p className="text-white/90 text-[15px] leading-relaxed font-medium">
+                                        {profile.bio}
+                                    </p>
+                                </div>
+
+                                {/* Skills / Hobbies Section */}
+                                {profile.hobbies && profile.hobbies.length > 0 && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {profile.hobbies.map((hobby, i) => (
+                                            <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[11px] text-white/70 font-semibold shadow-sm">
+                                                {hobby}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Prompts Section */}
+                                <div className="space-y-4">
+                                    {profile.prompts?.map((prompt, idx) => (
+                                        <div key={idx} className="bg-gradient-to-br from-white/10 to-transparent p-5 rounded-2xl border border-white/10 shadow-inner">
+                                            <p className="text-[11px] text-pink-400 font-black uppercase tracking-widest mb-2 opacity-80">{prompt.question}</p>
+                                            <p className="text-white font-medium text-lg leading-snug">{prompt.answer}</p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        {/* Home Bar indicator */}
+                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full z-20 pointer-events-none"></div>
+                    </motion.div>
                 </div>
 
                 {/* Feedback Form */}
