@@ -55,6 +55,7 @@ model ProfileVersion {
   latestForUser User?    @relation("LatestProfile")
 
   photos        Photo[]
+  hobbies       String[]
   reviews       Review[]
 }
 
@@ -78,9 +79,12 @@ model ReviewerPreference {
   // inverse side of 1-1
   user             User?
 
-  preferredGenders Gender[]
-  preferredIntent  DatingIntent?
-  tasteTags        String[]
+  preferredGenders  Gender[]
+  preferredIntent   DatingIntent?
+  preferredAgeMin   Int?
+  preferredAgeMax   Int?
+  preferredDescription String?
+  tasteTags         String[]
 }
 
 

@@ -104,6 +104,48 @@ const ProfileDetail = () => {
                                 </div>
                             ))}
                         </div>
+
+                        {/* Hobbies Section */}
+                        {profile.hobbies && profile.hobbies.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-bold text-white/40 uppercase tracking-widest">Hobbies & Interests</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {profile.hobbies.map((hobby, i) => (
+                                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-sm">
+                                            {hobby}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Reviewer Preferences Display */}
+                        {profile.ReviewerPreference && (
+                            <div className="space-y-4 pt-4 border-t border-white/5">
+                                <h3 className="text-sm font-bold text-white/40 uppercase tracking-widest text-center">My Ideal Match for Feedback</h3>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-white/5 p-3 rounded-2xl border border-white/10">
+                                        <p className="text-[10px] text-white/40 uppercase font-bold mb-1">Target Gender</p>
+                                        <p className="text-sm">{profile.ReviewerPreference.preferredGenders.join(', ')}</p>
+                                    </div>
+                                    <div className="bg-white/5 p-3 rounded-2xl border border-white/10">
+                                        <p className="text-[10px] text-white/40 uppercase font-bold mb-1">Target Age</p>
+                                        <p className="text-sm">
+                                            {profile.ReviewerPreference.preferredAgeMin && profile.ReviewerPreference.preferredAgeMax
+                                                ? `${profile.ReviewerPreference.preferredAgeMin} - ${profile.ReviewerPreference.preferredAgeMax}`
+                                                : 'Any age'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {profile.ReviewerPreference.preferredDescription && (
+                                    <div className="bg-white/5 p-4 rounded-2xl border border-white/10 italic text-white/80 text-sm">
+                                        "{profile.ReviewerPreference.preferredDescription}"
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </motion.div>

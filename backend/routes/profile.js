@@ -48,16 +48,20 @@ router.post('/', verifyToken, (req, res, next) => {
 
 
     try {
-        const { bio, name, age, gender, datingIntent, prompts } = req.body;
+        const { bio, name, age, gender, datingIntent, prompts, hobbies, reviewerPreferences } = req.body;
         const userId = req.user.userId;
 
-        // Parse prompts from JSON string if needed (FormData sends strings)
+        // Parse JSON fields from Form-Data (strings)
         let parsedPrompts = [];
+        let parsedHobbies = [];
+        let parsedPreferences = null;
+
         try {
-            parsedPrompts = typeof prompts === 'string' ? JSON.parse(prompts) : prompts;
+            parsedPrompts = typeof prompts === 'string' ? JSON.parse(prompts) : (prompts || []);
+            parsedHobbies = typeof hobbies === 'string' ? JSON.parse(hobbies) : (hobbies || []);
+            parsedPreferences = typeof reviewerPreferences === 'string' ? JSON.parse(reviewerPreferences) : (reviewerPreferences || null);
         } catch (e) {
-            console.error('Error parsing prompts:', e);
-            parsedPrompts = [];
+            console.error('Error parsing JSON fields:', e);
         }
 
         console.log('Creating profile in database...');
@@ -68,6 +72,7 @@ router.post('/', verifyToken, (req, res, next) => {
                 userId: userId,
                 bio: bio || '',
                 prompts: parsedPrompts,
+                hobbies: parsedHobbies,
                 photos: {
                     create: req.files.map(file => ({
                         url: file.path
@@ -92,6 +97,39 @@ router.post('/', verifyToken, (req, res, next) => {
                 datingIntent: datingIntent || undefined
             }
         });
+
+        // Handle Reviewer Preferences if provided
+        if (parsedPreferences) {
+            const { gender, intent, vibes, preferredAgeMin, preferredAgeMax, preferredDescription } = parsedPreferences;
+
+            const preference = await prisma.reviewerPreference.upsert({
+                where: { userId: userId },
+                update: {
+                    preferredGenders: gender === 'EVERYONE' ? ['MALE', 'FEMALE', 'NON_BINARY'] : [gender],
+                    preferredIntent: intent,
+                    preferredAgeMin: preferredAgeMin ? parseInt(preferredAgeMin) : null,
+                    preferredAgeMax: preferredAgeMax ? parseInt(preferredAgeMax) : null,
+                    preferredDescription: preferredDescription || null,
+                    tasteTags: vibes,
+                    profileVersionId: profile.id
+                },
+                create: {
+                    userId: userId,
+                    profileVersionId: profile.id,
+                    preferredGenders: gender === 'EVERYONE' ? ['MALE', 'FEMALE', 'NON_BINARY'] : [gender],
+                    preferredIntent: intent,
+                    preferredAgeMin: preferredAgeMin ? parseInt(preferredAgeMin) : null,
+                    preferredAgeMax: preferredAgeMax ? parseInt(preferredAgeMax) : null,
+                    preferredDescription: preferredDescription || null,
+                    tasteTags: vibes
+                }
+            });
+
+            await prisma.user.update({
+                where: { id: userId },
+                data: { preferenceId: preference.id }
+            });
+        }
 
         res.status(201).json({ message: 'Profile created successfully', profile });
     } catch (error) {
