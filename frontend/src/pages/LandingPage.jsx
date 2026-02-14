@@ -34,7 +34,7 @@ const LandingPage = () => {
                     className="relative z-10 max-w-4xl mx-auto px-4"
                 >
 
-                    <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
                         Optimize Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 neon-text">Dating Profile</span> with Real Feedback
                     </h1>
 

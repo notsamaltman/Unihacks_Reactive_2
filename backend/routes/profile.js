@@ -48,17 +48,19 @@ router.post('/', verifyToken, (req, res, next) => {
 
 
     try {
-        const { bio, name, age, gender, datingIntent, prompts, hobbies, reviewerPreferences } = req.body;
+        const { bio, name, age, gender, datingIntent, prompts, hobbies, pickupLines, reviewerPreferences } = req.body;
         const userId = req.user.userId;
 
         // Parse JSON fields from Form-Data (strings)
         let parsedPrompts = [];
         let parsedHobbies = [];
+        let parsedPickupLines = [];
         let parsedPreferences = null;
 
         try {
             parsedPrompts = typeof prompts === 'string' ? JSON.parse(prompts) : (prompts || []);
             parsedHobbies = typeof hobbies === 'string' ? JSON.parse(hobbies) : (hobbies || []);
+            parsedPickupLines = typeof pickupLines === 'string' ? JSON.parse(pickupLines) : (pickupLines || []);
             parsedPreferences = typeof reviewerPreferences === 'string' ? JSON.parse(reviewerPreferences) : (reviewerPreferences || null);
         } catch (e) {
             console.error('Error parsing JSON fields:', e);
@@ -73,6 +75,7 @@ router.post('/', verifyToken, (req, res, next) => {
                 bio: bio || '',
                 prompts: parsedPrompts,
                 hobbies: parsedHobbies,
+                pickupLines: parsedPickupLines,
                 photos: {
                     create: req.files.map(file => ({
                         url: file.path
@@ -172,41 +175,30 @@ router.get('/history', verifyToken, async (req, res) => {
     }
 });
 
-// Get a specific profile version
 router.get('/:id', verifyToken, async (req, res) => {
     console.log('GET /api/profile/:id hit with ID:', req.params.id);
     try {
         const profile = await prisma.profileVersion.findUnique({
             where: { id: req.params.id },
-            include: { photos: true }
+            include: {
+                photos: true,
+                user: {
+                    select: { name: true, age: true, gender: true }
+                },
+                reviews: {
+                    include: {
+                        feedback: true,
+                        reviewer: {
+                            select: { name: true, gender: true }
+                        }
+                    },
+                    orderBy: { createdAt: 'desc' }
+                }
+            }
         });
 
         if (!profile) {
             return res.status(404).json({ error: 'Profile not found' });
-        }
-
-        // For now, in this lab, profiles can be viewed by any authenticated user 
-        // if they are linked from the reviewer dashboard. 
-        // We'll just remove the strict ownership check for the detailed view 
-        // but keep it for editing (which happens in the POST route).
-
-        // However, we should at least ensure the user exists.
-        if (profile.userId !== req.user.userId) {
-            // Include user details if viewing as a reviewer
-            const extendedProfile = await prisma.profileVersion.findUnique({
-                where: { id: req.params.id },
-                include: {
-                    photos: true,
-                    user: { select: { name: true, age: true } },
-                    reviews: {
-                        include: {
-                            feedback: true,
-                            reviewer: { select: { name: true, gender: true } }
-                        }
-                    }
-                }
-            });
-            return res.json(extendedProfile);
         }
 
         res.json(profile);

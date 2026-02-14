@@ -12,6 +12,9 @@ import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import ReviewerDashboard from './pages/ReviewerDashboard';
 import ReviewInterface from './pages/ReviewInterface';
+import MyReviewsGiven from './pages/MyReviewsGiven';
+import ReviewsReceived from './pages/ReviewsReceived';
+import ChadRizzScore from './pages/ChadRizzScore';
 import UserProfile from './pages/UserProfile';
 import ProfileDetail from './pages/ProfileDetail';
 import ReviewDetail from './pages/ReviewDetail';
@@ -39,6 +42,9 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/reviewer-dashboard" element={<ProtectedRoute><ReviewerDashboard /></ProtectedRoute>} />
             <Route path="/review/:id" element={<ProtectedRoute><ReviewInterface /></ProtectedRoute>} />
+            <Route path="/my-reviews" element={<ProtectedRoute><MyReviewsGiven /></ProtectedRoute>} />
+            <Route path="/reviews-received" element={<ProtectedRoute><ReviewsReceived /></ProtectedRoute>} />
+            <Route path="/chad-rizz" element={<ProtectedRoute><ChadRizzScore /></ProtectedRoute>} />
             <Route path="/my-profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
             <Route path="/profile/:id" element={<ProtectedRoute><ProfileDetail /></ProtectedRoute>} />
             <Route path="/review-details/:id" element={<ProtectedRoute><ReviewDetail /></ProtectedRoute>} />

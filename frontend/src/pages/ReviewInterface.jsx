@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, MessageSquare, ThumbsUp, ThumbsDown, ArrowLeft, Send, AlertCircle } from 'lucide-react';
+import ImageStack from '../components/ImageStack';
 
 const ReviewInterface = () => {
     const { id } = useParams();
@@ -124,11 +125,6 @@ const ReviewInterface = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         className="w-full max-w-[360px] border-[12px] border-[#0f1115] rounded-[3.5rem] overflow-hidden bg-gray-900 shadow-[0_0_80px_rgba(0,0,0,0.5)] relative ring-1 ring-white/10"
                     >
-                        {/* Notch / Dynamic Island placeholder */}
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-[#0f1115] rounded-b-2xl z-30 flex items-center justify-center">
-                            <div className="w-12 h-1 bg-white/5 rounded-full"></div>
-                        </div>
-
                         <div className="h-[700px] overflow-y-auto pb-8 custom-scrollbar relative">
                             <div className="relative aspect-[3/4.2] bg-gray-800">
                                 <ImageStack files={profile.photos} />
@@ -165,6 +161,20 @@ const ReviewInterface = () => {
                                                 {hobby}
                                             </span>
                                         ))}
+                                    </div>
+                                )}
+
+                                {/* Pickup Lines Section */}
+                                {profile.pickupLines && profile.pickupLines.length > 0 && (
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Pickup Lines</p>
+                                        <div className="space-y-2">
+                                            {profile.pickupLines.map((line, i) => (
+                                                <div key={i} className="bg-white/5 border border-white/10 p-3 rounded-xl italic text-[13px] text-white/80">
+                                                    "{line}"
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
 

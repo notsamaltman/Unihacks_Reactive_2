@@ -52,16 +52,15 @@ const Navbar = () => {
         <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-black/20 border-b border-white/10">
             <div className="w-full px-8 py-4 flex justify-between items-center">
                 {/* Logo */}
-                <Link to="/" className="flex items-center gap-2 group">
-                    <div className="p-1 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 group-hover:shadow-[0_0_15px_rgba(236,72,153,0.5)] transition-all overflow-hidden">
-                        {/* REPLACED Rocket WITH bowlogo.jpeg */}
+                <Link to="/" className="flex items-center gap-3 group">
+                    <div className="transition-transform duration-300 group-hover:scale-110">
                         <img
-                            src="/bowlogo.jpeg"
+                            src="/logo_minimal.svg"
                             alt="RizzLab Logo"
-                            className="w-8 h-8 object-cover rounded-md"
+                            className="w-8 h-8 object-contain"
                         />
                     </div>
-                    <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400">
+                    <span className="text-2xl font-black tracking-tight text-white/90 group-hover:text-white transition-colors" style={{ fontFamily: "'Outfit', sans-serif" }}>
                         RizzLab
                     </span>
                 </Link>

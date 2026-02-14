@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, User, Calendar } from 'lucide-react';
+import { ArrowLeft, User, Calendar, MessageSquare, Zap } from 'lucide-react';
 import ImageStack from '../components/ImageStack';
 
 const ProfileDetail = () => {
@@ -109,6 +109,20 @@ const ProfileDetail = () => {
                                         <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-semibold text-white/60">
                                             {hobby}
                                         </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Pickup Lines Section */}
+                        {profile.pickupLines && profile.pickupLines.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Pickup Lines</h3>
+                                <div className="space-y-3">
+                                    {profile.pickupLines.map((line, i) => (
+                                        <div key={i} className="glass-card p-4 border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent italic text-white/80">
+                                            "{line}"
+                                        </div>
                                     ))}
                                 </div>
                             </div>

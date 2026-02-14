@@ -28,11 +28,7 @@ const ReviewerDashboard = () => {
         fetchMatches();
     }, []);
 
-    const stats = [
-        { label: 'Profiles Reviewed', value: '0', icon: User, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-        { label: 'Karma Points', value: '0', icon: Star, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
-        { label: 'Helpful Votes', value: '0', icon: TrendingUp, color: 'text-green-400', bg: 'bg-green-500/10' },
-    ];
+
 
     return (
         <div className="pt-24 pb-12 max-w-6xl mx-auto px-4">
@@ -42,32 +38,17 @@ const ReviewerDashboard = () => {
                     <h1 className="text-3xl font-bold mb-2">Reviewer Dashboard</h1>
                     <p className="text-white/60">Help others optimize their profiles and earn karma.</p>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30">
-                    <Shield className="w-4 h-4 text-purple-400" />
-                    <span className="text-sm font-medium text-purple-200">Level 1 Reviewer</span>
+                <div className="flex items-center gap-4">
+                    <Link to="/reviews-received" className="text-sm font-bold text-pink-400 hover:text-pink-300 transition-colors bg-pink-500/10 px-4 py-2 rounded-full border border-pink-500/20">
+                        Reviews Received
+                    </Link>
+                    <Link to="/my-reviews" className="text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20">
+                        My Reviews
+                    </Link>
                 </div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                {stats.map((stat, idx) => (
-                    <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="glass-card p-6 flex items-center gap-4"
-                    >
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
-                            <stat.icon className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <div className="text-2xl font-bold">{stat.value}</div>
-                            <div className="text-sm text-white/60">{stat.label}</div>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+
 
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-pink-400" />

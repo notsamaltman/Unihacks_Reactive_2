@@ -34,6 +34,8 @@ const ProfileSubmission = () => {
     const [prompts, setPrompts] = useState([{ question: '', answer: '' }]);
     const [hobbies, setHobbies] = useState([]);
     const [hobbyInput, setHobbyInput] = useState('');
+    const [pickupLines, setPickupLines] = useState([]);
+    const [pickupLineInput, setPickupLineInput] = useState('');
     const [prefs, setPrefs] = useState({
         gender: 'EVERYONE',
         intent: 'LONG_TERM',
@@ -58,6 +60,7 @@ const ProfileSubmission = () => {
             formData.append('bio', bio);
             formData.append('prompts', JSON.stringify(prompts));
             formData.append('hobbies', JSON.stringify(hobbies));
+            formData.append('pickupLines', JSON.stringify(pickupLines));
             formData.append('reviewerPreferences', JSON.stringify({
                 gender: prefs.gender,
                 intent: prefs.intent,
@@ -105,6 +108,17 @@ const ProfileSubmission = () => {
 
     const removeHobby = (hobby) => {
         setHobbies(hobbies.filter(h => h !== hobby));
+    };
+
+    const addPickupLine = () => {
+        if (pickupLineInput.trim() && !pickupLines.includes(pickupLineInput.trim())) {
+            setPickupLines([...pickupLines, pickupLineInput.trim()]);
+            setPickupLineInput('');
+        }
+    };
+
+    const removePickupLine = (line) => {
+        setPickupLines(pickupLines.filter(l => l !== line));
     };
 
     return (
@@ -213,6 +227,40 @@ const ProfileSubmission = () => {
                         </div>
                     </div>
 
+                    {/* Pickup Lines Section */}
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium ml-1">Your Pickup Lines</label>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={pickupLineInput}
+                                onChange={(e) => setPickupLineInput(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addPickupLine())}
+                                placeholder="Add a pickup line (e.g. Are you a magician? Because...)"
+                                className="glass-input flex-grow"
+                            />
+                            <button
+                                type="button"
+                                onClick={addPickupLine}
+                                className="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                            >
+                                Add
+                            </button>
+                        </div>
+                        <div className="space-y-2 mt-2">
+                            {pickupLines.map((line, i) => (
+                                <div key={i} className="group p-3 bg-white/5 border border-white/10 rounded-xl flex justify-between items-center transition-all hover:bg-white/10">
+                                    <p className="text-sm italic">"{line}"</p>
+                                    <button
+                                        type="button"
+                                        onClick={() => removePickupLine(line)}
+                                        className="text-white/40 hover:text-red-400 p-1"
+                                    >×</button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* Photo Upload */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium ml-1">Profile Photos (Max 6)</label>
@@ -315,6 +363,17 @@ const ProfileSubmission = () => {
                                                 <span key={i} className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] text-white/60 font-medium">
                                                     {hobby}
                                                 </span>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {pickupLines.length > 0 && (
+                                        <div className="space-y-2 pt-2">
+                                            {pickupLines.map((line, i) => (
+                                                <div key={i} className="bg-pink-500/10 border border-pink-500/20 p-2.5 rounded-xl">
+                                                    <p className="text-[11px] font-black text-pink-400 uppercase tracking-widest mb-1 opacity-60">Pickup Line</p>
+                                                    <p className="text-[13px] italic font-medium">"{line}"</p>
+                                                </div>
                                             ))}
                                         </div>
                                     )}

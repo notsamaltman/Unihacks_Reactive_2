@@ -149,6 +149,38 @@ router.get('/my-reviews', verifyToken, async (req, res) => {
 });
 
 /**
+ * @route GET /api/reviews/given
+ * @desc Get reviews provided by the current user to others
+ */
+router.get('/given', verifyToken, async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const reviews = await prisma.review.findMany({
+            where: {
+                reviewerId: userId
+            },
+            include: {
+                profileVersion: {
+                    include: {
+                        user: {
+                            select: { name: true, gender: true, age: true }
+                        },
+                        photos: { take: 1 }
+                    }
+                },
+                feedback: true
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        res.json(reviews);
+    } catch (error) {
+        console.error('Error fetching given reviews:', error);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+    }
+});
+
+/**
  * @route PATCH /api/reviews/:id/read
  * @desc Mark a review as read
  */

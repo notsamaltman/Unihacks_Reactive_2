@@ -85,7 +85,7 @@ const Dashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-16 relative z-10"
             >
-                <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                <h1 className="text-4xl md:text-6xl font-bold mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
                     Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">RizzLab</span>
                 </h1>
                 <p className="text-xl text-white/60">Choose your path to dating success</p>
@@ -177,17 +177,17 @@ const Dashboard = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                 >
-                    <Link to="/feedback" className="block h-full group">
+                    <Link to="/chad-rizz" className="block h-full group">
                         <div className="glass-card p-8 h-full hover:bg-white/10 transition-colors border border-white/10 hover:border-yellow-500/50">
                             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/20 group-hover:scale-110 transition-transform">
                                 <Sparkles className="w-8 h-8 text-white" />
                             </div>
-                            <h3 className="text-2xl font-bold mb-4 group-hover:text-yellow-400 transition-colors">My Rizz Score</h3>
+                            <h3 className="text-2xl font-bold mb-4 group-hover:text-yellow-400 transition-colors">Chad Rizz Score</h3>
                             <p className="text-white/60 mb-6">
-                                Check your profile's performance and detailed AI analysis.
+                                Get lethal actionable insights and your official rizz score from Chad.
                             </p>
-                            <div className="flex items-center text-yellow-400 font-medium">
-                                View Results <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                            <div className="flex items-center text-yellow-400 font-medium font-black italic uppercase tracking-widest text-[10px]">
+                                Get Insights from Chad <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                             </div>
                         </div>
                     </Link>

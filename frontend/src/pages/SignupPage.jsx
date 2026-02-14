@@ -84,10 +84,14 @@ const SignupPage = () => {
                 className="w-full max-w-md p-8 glass-card relative z-10"
             >
                 <div className="text-center mb-8">
-                    <div className="inline-flex p-3 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 mb-4 shadow-lg shadow-pink-500/20">
-                        <Rocket className="w-8 h-8 text-white" />
+                    <div className="inline-flex mb-4">
+                        <img
+                            src="/logo_minimal.svg"
+                            alt="RizzLab Logo"
+                            className="w-12 h-12 object-contain"
+                        />
                     </div>
-                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400">
+                    <h2 className="text-3xl font-black text-white/90 tracking-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
                         {isSignedUp ? 'Welcome aboard!' : 'Create Account'}
                     </h2>
                     <p className="text-white/60 mt-2">

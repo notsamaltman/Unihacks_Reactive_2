@@ -104,6 +104,17 @@ const UserProfile = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Pickup Lines Preview in Hero */}
+                        {latestProfile?.pickupLines && latestProfile.pickupLines.length > 0 && (
+                            <div className="hidden md:flex flex-col gap-2 max-w-xs transition-opacity group-hover:opacity-100">
+                                <p className="text-[9px] font-black text-white/30 uppercase tracking-widest">Featured Pickup Line</p>
+                                <p className="text-xs italic text-white/80 line-clamp-2 bg-white/5 border border-white/10 p-2 rounded-lg backdrop-blur-sm">
+                                    "{latestProfile.pickupLines[0]}"
+                                </p>
+                            </div>
+                        )}
+
                         <Link to="/submit" className="btn-primary py-4 px-8 text-lg flex items-center gap-3 group whitespace-nowrap">
                             Create New Version
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -233,6 +244,15 @@ const UserProfile = () => {
                                                                 <Star className="w-3.5 h-3.5 text-pink-500" />
                                                                 {profile.reviews?.length || 0} Reviews
                                                             </span>
+                                                            {profile.pickupLines && profile.pickupLines.length > 0 && (
+                                                                <>
+                                                                    <span className="w-1 h-1 bg-white/10 rounded-full"></span>
+                                                                    <span className="flex items-center gap-1.5 text-pink-400">
+                                                                        <Target className="w-3.5 h-3.5" />
+                                                                        {profile.pickupLines.length} Pickup Lines
+                                                                    </span>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
