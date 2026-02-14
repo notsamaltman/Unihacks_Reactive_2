@@ -127,9 +127,9 @@ const LandingPage = () => {
 
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { name: "Alex, 24", text: "I went from 0 matches to 5 in a week just by changing my bio!", rating: 5 },
-                            { name: "Sarah, 22", text: "The honest feedback on my photos was a game changer.", rating: 5 },
-                            { name: "Mike, 27", text: "Finally understood why I was getting ghosted. Thanks RizzLab!", rating: 4 }
+                            { name: "Alex, 24", text: "I went from 0 matches to 5 in a week just by changing my bio!", rating: 5, img: "/user1.jfif" },
+                            { name: "Sarah, 22", text: "The honest feedback on my photos was a game changer.", rating: 5, img: "/user2.jfif" },
+                            { name: "Mike, 27", text: "Finally understood why I was getting ghosted. Thanks RizzLab!", rating: 4, img: "/user3.jfif" }
                         ].map((user, idx) => (
                             <motion.div
                                 key={idx}
@@ -146,8 +146,13 @@ const LandingPage = () => {
                                 </div>
                                 <p className="text-white/80 mb-6 italic">"{user.text}"</p>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-gray-700 to-gray-600"></div>
-                                    <span className="font-bold text-sm">{user.name}</span>
+                                    {/* REPLACED PLACEHOLDER DIV WITH IMG TAG */}
+                                    <img
+                                        src={user.img}
+                                        alt={user.name}
+                                        className="w-10 h-10 rounded-full object-cover border border-white/20"
+                                    />
+                                    <span className="font-bold text-sm text-white">{user.name}</span>
                                 </div>
                             </motion.div>
                         ))}
