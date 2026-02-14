@@ -63,7 +63,7 @@ const Navbar = () => {
                             className="w-8 h-8 object-contain"
                         />
                     </div>
-                    <span className="text-2xl font-black tracking-tight text-white/90 group-hover:text-white transition-colors" style={{ fontFamily: "'Outfit', sans-serif" }}>
+                    <span className="text-2xl font-black tracking-tight text-white/90 group-hover:text-white transition-colors" style={{ fontFamily: "'Poppins', sans-serif" }}>
                         RizzLab
                     </span>
                 </Link>

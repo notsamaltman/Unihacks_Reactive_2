@@ -86,7 +86,7 @@ const Dashboard = () => {
                 className="text-center mb-16 relative z-10"
             >
                 <h1 className="text-4xl md:text-6xl font-bold mb-4" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                    Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">RizzLab</span>
+                    Welcome to <span style={{ fontFamily: "'Poppins', sans-serif" }} className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">RizzLab</span>
                 </h1>
                 <p className="text-xl text-white/60">Choose your path to dating success</p>
             </motion.div>

@@ -129,7 +129,7 @@ const LandingPage = () => {
                         {[
                             { name: "Alex, 24", text: "I went from 0 matches to 5 in a week just by changing my bio!", rating: 5, img: "/user1.jfif" },
                             { name: "Sarah, 22", text: "The honest feedback on my photos was a game changer.", rating: 5, img: "/user2.jfif" },
-                            { name: "Mike, 27", text: "Finally understood why I was getting ghosted. Thanks RizzLab!", rating: 4, img: "/user3.jfif" }
+                            { name: "Mike, 27", text: "Finally understood why I was getting ghosted. Thanks <span style=\"font-family: 'Poppins', sans-serif\" class=\"font-bold\">RizzLab</span>!", rating: 4, img: "/user3.jfif" }
                         ].map((user, idx) => (
                             <motion.div
                                 key={idx}

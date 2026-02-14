@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { User, Calendar, Star, ArrowRight, TrendingUp } from 'lucide-react';
+import { User, Calendar, Star, ArrowRight, TrendingUp, Target } from 'lucide-react';
 
 const UserProfile = () => {
     const navigate = useNavigate();

@@ -84,7 +84,7 @@ const Leaderboard = () => {
                         RIZZLERS <span className="text-primary italic">OF THE</span> WEEK
                     </h1>
                     <p className="text-white/40 text-lg max-w-xl mx-auto font-medium">
-                        The top 5 profiles setting the standard for RizzLab. Calculated by community consensus.
+                        The top 5 profiles setting the standard for <span style={{ fontFamily: "'Poppins', sans-serif" }} className="font-bold">RizzLab</span>. Calculated by community consensus.
                     </p>
                 </motion.div>
 

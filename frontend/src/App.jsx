@@ -53,7 +53,7 @@ function App() {
           </Routes>
         </main>
         <footer className="py-8 text-center text-white/40 text-sm">
-          <p>© {new Date().getFullYear()} RizzLab. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} <span style={{ fontFamily: "'Poppins', sans-serif" }} className="font-bold">RizzLab</span>. All rights reserved.</p>
         </footer>
       </div>
     </Router>
