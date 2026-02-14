@@ -18,6 +18,7 @@ import ChadRizzScore from './pages/ChadRizzScore';
 import UserProfile from './pages/UserProfile';
 import ProfileDetail from './pages/ProfileDetail';
 import ReviewDetail from './pages/ReviewDetail';
+import Leaderboard from './pages/Leaderboard';
 import Navbar from './components/Navbar';
 
 import ProtectedRoute from './components/ProtectedRoute';
@@ -45,6 +46,7 @@ function App() {
             <Route path="/my-reviews" element={<ProtectedRoute><MyReviewsGiven /></ProtectedRoute>} />
             <Route path="/reviews-received" element={<ProtectedRoute><ReviewsReceived /></ProtectedRoute>} />
             <Route path="/chad-rizz" element={<ProtectedRoute><ChadRizzScore /></ProtectedRoute>} />
+            <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             <Route path="/my-profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
             <Route path="/profile/:id" element={<ProtectedRoute><ProfileDetail /></ProtectedRoute>} />
             <Route path="/review-details/:id" element={<ProtectedRoute><ReviewDetail /></ProtectedRoute>} />

@@ -45,7 +45,10 @@ const Navbar = () => {
     };
 
     const navItems = isLoggedIn
-        ? [{ name: 'Dashboard', path: '/dashboard' }]
+        ? [
+            { name: 'Dashboard', path: '/dashboard' },
+            { name: 'Leaderboard', path: '/leaderboard' }
+        ]
         : [{ name: 'Testimonials', id: 'testimonials' }];
 
     return (

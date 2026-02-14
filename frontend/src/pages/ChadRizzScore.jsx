@@ -109,7 +109,6 @@ const ChadRizzScore = () => {
                                     <div className="w-full h-full flex items-center justify-center"><User className="w-16 h-16 text-white/10" /></div>
                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0f1115] via-[#0f1115]/20 to-transparent flex flex-col justify-end p-8">
-                                    <h3 className="text-3xl font-black italic">{profile.user?.name}, {profile.user?.age}</h3>
                                     <p className="text-white/70 mt-2 line-clamp-3 font-medium">{profile.bio}</p>
 
                                     <div className="flex flex-wrap gap-2 mt-4">

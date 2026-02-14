@@ -7,6 +7,7 @@ import profileRoute from "./routes/profile.js";
 import preferencesRoute from "./routes/preferences.js";
 import reviewsRoute from "./routes/reviews.js";
 import aiRoute from "./routes/ai.js";
+import leaderboardRoute from "./routes/leaderboard.js";
 
 router.use("/signup", signupRoute);
 router.use("/login", loginRoute);
@@ -14,5 +15,6 @@ router.use("/profile", profileRoute);
 router.use("/preferences", preferencesRoute);
 router.use("/reviews", reviewsRoute);
 router.use("/ai", aiRoute);
+router.use("/leaderboard", leaderboardRoute);
 
 export default router;
